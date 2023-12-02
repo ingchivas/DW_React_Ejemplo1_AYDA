@@ -35,7 +35,7 @@ function App() {
       font-semibold py-2 px-4 rounded-xl'>
         Sumar 1 a la cuenta
       </button> */}
-      <NavBar user={user} />
+      <NavBar user={user} onReload={reloadPhotos} />
       {/* <NavBar user={{name: "Emilio Otero", email:"eo@up.mx", photo:"https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"}}/>
       <NavBar/> */}
 

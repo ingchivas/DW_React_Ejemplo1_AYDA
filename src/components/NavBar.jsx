@@ -1,6 +1,33 @@
 import PropTypes from 'prop-types'
+import { useState } from 'react'
+import CreatePostModal from './CreatePostModal';
 
-function NavBar({ user }) {
+function NavBar({ user, onReload }) {
+
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const handleSubmit = async (postData) => {
+        try {
+            const response = await fetch('https://img.api.mbgrp.com.mx/api/v1/images',{
+                method : 'POST',
+                headers:{
+                    'Content-Type' : 'application/json'
+                },
+                body:JSON.stringify(postData)
+            });
+            if (!response.ok) {
+                throw new Error("Error de Red")
+            }
+            setIsModalOpen(false)
+            onReload()
+
+        } catch (error) {
+            console.error('No pude mandar el post ', error)
+        }
+
+    }
+
+
     return (
         <nav className='bg-gray-800 text-white p-4'>
             <div className='container mx-auto flex justify-between items-center'>
@@ -20,7 +47,9 @@ function NavBar({ user }) {
                 <div className='flex items-center space-x-4'>
                     <a href='/' className='hover:text-gray-300'>Home</a>
                     <a href='/' className='hover:text-gray-300'>Mi perfil</a>
-                    <button className='hover:text-gray-300 text-white bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded'>
+                    <button className='hover:text-gray-300 text-white bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded'
+                    onClick={()=> setIsModalOpen(true)}
+                    >
                         Crear Post
                     </button>
 
@@ -46,7 +75,11 @@ function NavBar({ user }) {
                 </div>
 
             </div>
-
+                
+                {isModalOpen &&
+                <CreatePostModal onClose={() => setIsModalOpen(false)}
+                onSubmit={handleSubmit}/>
+                }
 
         </nav>
     )
@@ -60,7 +93,8 @@ NavBar.propTypes = {
             email: PropTypes.string,
             photo: PropTypes.string
         }
-    )
+    ),
+    onReload: PropTypes.func.isRequired
 }
 
 export default NavBar;
